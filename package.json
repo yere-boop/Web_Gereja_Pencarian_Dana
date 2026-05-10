@@ -1,0 +1,19 @@
+{
+  "name": "web-gereja-pencarian-dana",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^8.0.10"
+  },
+  "dependencies": {
+    "chart.js": "^4.5.1",
+    "firebase": "^12.13.0",
+    "lucide-static": "^1.14.0"
+  }
+}

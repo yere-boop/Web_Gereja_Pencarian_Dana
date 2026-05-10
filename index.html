@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kasir GPdI Galilea Tondano</title>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div id="app">
+        <!-- Auth View -->
+        <div id="auth-view" class="auth-container">
+            <div class="auth-card">
+                <h1>GPdI Galilea</h1>
+                <p>Silakan login untuk mengakses kasir</p>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" id="username" class="form-input" placeholder="Masukkan username" required>
+                    </div>
+                    <div class="form-group" style="position: relative;">
+                        <label>Password</label>
+                        <input type="password" id="password" class="form-input" placeholder="Masukkan password" required>
+                        <button type="button" id="toggle-password" style="position: absolute; right: 12px; top: 38px; background: none; color: var(--text-muted);">
+                            <i data-lucide="eye"></i>
+                        </button>
+                    </div>
+                    <button type="submit" class="btn-primary">Masuk ke Sistem</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Main App View (Hidden by default) -->
+        <div id="app-view" class="app-shell hidden">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-header" style="margin-bottom: 40px;">
+                    <div>
+                        <div class="church-name" style="line-height: 1.2;">GPdI Galilea</div>
+                        <div style="font-size: 0.75rem; opacity: 0.7; letter-spacing: 0.5px; text-transform: uppercase;">Pencarian Dana</div>
+                    </div>
+                </div>
+                <nav class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link active" data-page="pos">
+                            <i data-lucide="shopping-cart"></i> Transaksi
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-page="products">
+                            <i data-lucide="package"></i> Produk
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-page="history">
+                            <i data-lucide="history"></i> Riwayat
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-page="reports">
+                            <i data-lucide="bar-chart-2"></i> Laporan
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-page="settings">
+                            <i data-lucide="settings"></i> Pengaturan
+                        </a>
+                    </li>
+                </nav>
+                <div class="sidebar-footer">
+                    <button id="btn-logout" class="nav-link" style="width: 100%; border: none; background: none; text-align: left;">
+                        <i data-lucide="log-out"></i> Keluar
+                    </button>
+                </div>
+            </aside>
+
+            <!-- Main Content Area -->
+            <main class="main-content">
+                <header class="top-bar">
+                    <div id="page-title">
+                        <h2 id="current-view-title">Transaksi Baru</h2>
+                    </div>
+                    <div class="user-profile">
+                        <div class="avatar">A</div>
+                        <div>
+                            <div style="font-weight: 600; font-size: 0.9rem;" id="admin-display-name">Admin</div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted);" id="header-church-name">GPdI Galilea Tondano</div>
+                        </div>
+                    </div>
+                </header>
+
+                <div id="content-area">
+                    <!-- Dynamic content will be injected here -->
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="modal-container" class="modal-overlay">
+        <div class="modal-content" id="modal-body">
+            <!-- Modal content injected here -->
+        </div>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+    </script>
+</body>
+</html>
