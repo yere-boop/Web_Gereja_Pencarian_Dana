@@ -54,8 +54,15 @@ export const renderPOS = async () => {
   return `
     <div class="stats-grid">
       <div class="stat-card">
-        <div class="stat-label">Total Pemasukan Hari Ini</div>
-        <div class="stat-value" id="pos-today-income">Rp ${totalIncomeToday.toLocaleString('id-ID')}</div>
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <div style="width: 44px; height: 44px; background: linear-gradient(135deg, #ecfdf5, #d1fae5); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <i data-lucide="wallet" style="color: var(--primary); width: 22px; height: 22px;"></i>
+          </div>
+          <div>
+            <div class="stat-label">Pemasukan Hari Ini</div>
+            <div class="stat-value" id="pos-today-income">Rp ${totalIncomeToday.toLocaleString('id-ID')}</div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -72,10 +79,10 @@ export const renderPOS = async () => {
 
       <!-- Cart Panel -->
       <div class="cart-panel">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 10px;">
-          <h3 style="margin: 0;">Keranjang</h3>
-          <div style="font-size: 0.85rem; color: var(--text-muted); font-weight: 500;">
-            ${new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
+          <h3 style="margin: 0; font-size: 1.1rem;">🛒 Keranjang</h3>
+          <div style="font-size: 0.78rem; color: var(--text-muted); font-weight: 600; background: var(--bg); padding: 4px 12px; border-radius: 100px;">
+            ${new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
           </div>
         </div>
         
@@ -105,9 +112,9 @@ export const renderPOS = async () => {
           <div class="form-group" style="margin-top: 16px;">
             <label>Metode Pembayaran</label>
             <div style="display: flex; gap: 8px;">
-              <button class="pay-method-btn active" data-method="Tunai" style="flex: 1; padding: 10px; border-radius: 10px; background: #eee; font-size: 0.9rem;">Tunai</button>
-              <button class="pay-method-btn" data-method="QRIS" style="flex: 1; padding: 10px; border-radius: 10px; background: #eee; font-size: 0.9rem;">QRIS</button>
-              <button class="pay-method-btn" data-method="Utang" style="flex: 1; padding: 10px; border-radius: 10px; background: #eee; font-size: 0.9rem;">Utang</button>
+              <button class="pay-method-btn active" data-method="Tunai" style="flex: 1; padding: 10px; border-radius: 10px;">💵 Tunai</button>
+              <button class="pay-method-btn" data-method="QRIS" style="flex: 1; padding: 10px; border-radius: 10px;">📱 QRIS</button>
+              <button class="pay-method-btn" data-method="Utang" style="flex: 1; padding: 10px; border-radius: 10px;">📋 Utang</button>
             </div>
           </div>
 
@@ -172,13 +179,8 @@ export const initPOS = async () => {
 
   methodBtns.forEach(btn => {
     btn.onclick = () => {
-      methodBtns.forEach(b => b.classList.remove('active', 'btn-primary'));
-      methodBtns.forEach(b => b.style.background = '#eee');
-      methodBtns.forEach(b => b.style.color = 'inherit');
-      
+      methodBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      btn.style.background = 'var(--primary)';
-      btn.style.color = 'white';
       
       currentMethod = btn.getAttribute('data-method');
       
@@ -378,48 +380,48 @@ const showReceipt = async (transaction, id) => {
   const modalBody = document.getElementById('modal-body');
   
   modalBody.innerHTML = `
-    <div id="receipt-print" style="font-family: 'Courier New', Courier, monospace; color: #000; padding: 10px;">
-      <div style="text-align: center; border-bottom: 1px dashed #000; padding-bottom: 10px; margin-bottom: 10px;">
-        <h3 style="margin: 0;">${settings.churchName}</h3>
-        <p style="font-size: 0.8rem; margin: 4px 0;">ID: ${id}</p>
-        <p style="font-size: 0.8rem;">${new Date().toLocaleString('id-ID')}</p>
+    <div id="receipt-print" style="font-family: 'Plus Jakarta Sans', sans-serif; color: #1a202c; padding: 8px;">
+      <div style="text-align: center; border-bottom: 2px dashed var(--border); padding-bottom: 16px; margin-bottom: 16px;">
+        <div style="font-size: 1.15rem; font-weight: 800; color: var(--primary);">${settings.churchName}</div>
+        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">ID: ${id.substring(0,12)}</div>
+        <div style="font-size: 0.75rem; color: var(--text-muted);">${new Date().toLocaleString('id-ID')}</div>
       </div>
       
-      <div style="font-size: 0.9rem; margin-bottom: 10px;">
-        <p>Pembeli: ${transaction.buyerName}</p>
-        <p>Acara: ${transaction.eventName}</p>
+      <div style="font-size: 0.88rem; margin-bottom: 16px; display: grid; grid-template-columns: auto 1fr; gap: 4px 12px;">
+        <span style="color: var(--text-muted);">Pembeli</span><span style="font-weight: 600;">${transaction.buyerName}</span>
+        <span style="color: var(--text-muted);">Lokasi</span><span style="font-weight: 600;">${transaction.eventName}</span>
       </div>
       
-      <div style="border-bottom: 1px dashed #000; padding-bottom: 10px; margin-bottom: 10px;">
+      <div style="border-bottom: 2px dashed var(--border); padding-bottom: 12px; margin-bottom: 12px;">
         ${transaction.items.map(item => `
-          <div style="display: flex; justify-content: space-between; font-size: 0.9rem;">
-            <span>${item.name} x${item.quantity}</span>
-            <span>Rp ${(item.price * item.quantity).toLocaleString('id-ID')}</span>
+          <div style="display: flex; justify-content: space-between; font-size: 0.88rem; padding: 4px 0;">
+            <span style="color: var(--text-secondary);">${item.name} <span style="color: var(--text-muted);">×${item.quantity}</span></span>
+            <span style="font-weight: 600;">Rp ${(item.price * item.quantity).toLocaleString('id-ID')}</span>
           </div>
         `).join('')}
       </div>
       
-      <div style="font-size: 1.1rem; font-weight: 700; display: flex; justify-content: space-between; margin-bottom: 10px;">
+      <div style="font-size: 1.2rem; font-weight: 800; display: flex; justify-content: space-between; margin-bottom: 12px; color: var(--primary);">
         <span>TOTAL</span>
         <span>Rp ${transaction.total.toLocaleString('id-ID')}</span>
       </div>
       
-      <div style="font-size: 0.85rem; margin-bottom: 10px;">
-        <p>Metode: ${transaction.paymentMethod}</p>
+      <div style="font-size: 0.82rem; margin-bottom: 12px; background: var(--bg); padding: 10px 14px; border-radius: 10px;">
+        <div style="display: flex; justify-content: space-between;"><span style="color: var(--text-muted);">Metode</span><span class="badge ${transaction.paymentMethod === 'Tunai' ? 'badge-cash' : (transaction.paymentMethod === 'QRIS' ? 'badge-qris' : 'badge-debt')}">${transaction.paymentMethod}</span></div>
         ${transaction.paymentMethod === 'Tunai' ? `
-          <p>Dibayar: Rp ${transaction.paymentDetails.received.toLocaleString('id-ID')}</p>
-          <p>Kembali: Rp ${transaction.paymentDetails.change.toLocaleString('id-ID')}</p>
-        ` : '<p>Status: LUNAS (QRIS)</p>'}
+          <div style="display: flex; justify-content: space-between; margin-top: 6px;"><span style="color: var(--text-muted);">Dibayar</span><span style="font-weight: 600;">Rp ${transaction.paymentDetails.received.toLocaleString('id-ID')}</span></div>
+          <div style="display: flex; justify-content: space-between; margin-top: 4px;"><span style="color: var(--text-muted);">Kembali</span><span style="font-weight: 700; color: var(--primary);">Rp ${transaction.paymentDetails.change.toLocaleString('id-ID')}</span></div>
+        ` : (transaction.paymentMethod === 'Utang' ? '<div style="margin-top: 6px; color: #d97706;">📌 Dicatat sebagai piutang</div>' : '<div style="margin-top: 6px; color: var(--primary);">✅ Lunas via QRIS</div>')}
       </div>
       
-      <div style="text-align: center; border-top: 1px dashed #000; padding-top: 10px; margin-top: 10px; font-size: 0.8rem;">
-        <p>${settings.receiptFooter}</p>
+      <div style="text-align: center; border-top: 2px dashed var(--border); padding-top: 12px; margin-top: 8px; font-size: 0.78rem; color: var(--text-muted);">
+        ${settings.receiptFooter}
       </div>
     </div>
     
     <div style="display: flex; gap: 10px; margin-top: 20px;">
-      <button class="btn-primary" onclick="window.print()" style="flex: 1;">Cetak / Screenshot</button>
-      <button class="btn-close-modal" style="flex: 1; padding: 12px; border-radius: 12px; background: #eee;">Tutup</button>
+      <button class="btn-primary" onclick="window.print()" style="flex: 1;">🖨️ Cetak</button>
+      <button class="btn-close-modal" style="flex: 1; padding: 12px; border-radius: var(--radius); background: var(--bg); font-weight: 600; color: var(--text-secondary);">Tutup</button>
     </div>
   `;
   

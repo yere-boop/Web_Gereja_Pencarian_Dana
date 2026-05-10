@@ -6,43 +6,74 @@ export const renderReports = async () => {
   return `
     <div class="stats-grid">
       <div class="stat-card">
-        <div class="stat-label">Total Pemasukan (Semua)</div>
-        <div class="stat-value" id="rep-total-all">Rp 0</div>
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <div style="width: 44px; height: 44px; background: linear-gradient(135deg, #ecfdf5, #d1fae5); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <i data-lucide="trending-up" style="color: var(--primary); width: 22px; height: 22px;"></i>
+          </div>
+          <div>
+            <div class="stat-label">Total Pemasukan</div>
+            <div class="stat-value" id="rep-total-all">Rp 0</div>
+          </div>
+        </div>
       </div>
       <div class="stat-card">
-        <div class="stat-label">Transaksi Selesai</div>
-        <div class="stat-value" id="rep-total-count">0</div>
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <div style="width: 44px; height: 44px; background: linear-gradient(135deg, #eff6ff, #dbeafe); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <i data-lucide="receipt" style="color: #2563eb; width: 22px; height: 22px;"></i>
+          </div>
+          <div>
+            <div class="stat-label">Total Transaksi</div>
+            <div class="stat-value" id="rep-total-count" style="color: #2563eb;">0</div>
+          </div>
+        </div>
       </div>
       <div class="stat-card">
-        <div class="stat-label">Pemasukan Hari Ini</div>
-        <div class="stat-value" id="rep-total-today">Rp 0</div>
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <div style="width: 44px; height: 44px; background: linear-gradient(135deg, #f0fdf4, #dcfce7); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <i data-lucide="calendar-check" style="color: #16a34a; width: 22px; height: 22px;"></i>
+          </div>
+          <div>
+            <div class="stat-label">Pemasukan Hari Ini</div>
+            <div class="stat-value" id="rep-total-today" style="color: #16a34a;">Rp 0</div>
+          </div>
+        </div>
       </div>
-      <div class="stat-card" style="border-left: 4px solid #fcd34d;">
-        <div class="stat-label">Total Piutang (Utang)</div>
-        <div class="stat-value" id="rep-total-debt" style="color: #b45309;">Rp 0</div>
+      <div class="stat-card" style="border-left: 3px solid #fbbf24;">
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <div style="width: 44px; height: 44px; background: linear-gradient(135deg, #fffbeb, #fef3c7); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <i data-lucide="clock" style="color: #d97706; width: 22px; height: 22px;"></i>
+          </div>
+          <div>
+            <div class="stat-label">Total Piutang</div>
+            <div class="stat-value" id="rep-total-debt" style="color: #d97706;">Rp 0</div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 24px; margin-bottom: 32px;">
-      <div class="card" style="padding: 24px;">
-        <h4 style="margin-bottom: 16px;">Metode Pembayaran</h4>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 20px; margin-bottom: 28px;">
+      <div class="card" style="padding: 24px; border: 1px solid var(--border-light, #f1f5f9);">
+        <h4 style="margin-bottom: 16px; font-size: 0.95rem; color: var(--text-secondary, #4a5568);">📊 Metode Pembayaran</h4>
         <canvas id="chart-methods"></canvas>
       </div>
-      <div class="card" style="padding: 24px;">
-        <h4 style="margin-bottom: 16px;">Produk Terlaris</h4>
+      <div class="card" style="padding: 24px; border: 1px solid var(--border-light, #f1f5f9);">
+        <h4 style="margin-bottom: 16px; font-size: 0.95rem; color: var(--text-secondary, #4a5568);">🏆 Produk Terlaris</h4>
         <canvas id="chart-products"></canvas>
       </div>
     </div>
 
-    <div class="card" style="padding: 24px; margin-bottom: 32px;">
-      <h4 style="margin-bottom: 20px;">Ekspor Data & Manajemen</h4>
-      <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-        <button id="btn-export-all" class="btn-primary" style="width: auto;">Ekspor Semua ke CSV</button>
-        <div style="display: flex; gap: 8px;">
-          <input type="text" id="export-event-name" class="form-input" placeholder="Nama Acara" style="width: 200px;">
-          <button id="btn-export-event" class="btn-primary" style="width: auto; background: var(--primary-light);">Ekspor per Acara</button>
+    <div class="card" style="padding: 24px; margin-bottom: 28px; border: 1px solid var(--border-light, #f1f5f9);">
+      <h4 style="margin-bottom: 20px; font-size: 0.95rem; color: var(--text-secondary, #4a5568);">📁 Ekspor Data & Manajemen</h4>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+        <button id="btn-export-all" class="btn-primary" style="width: auto; padding: 10px 20px;">📥 Ekspor Semua CSV</button>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <select id="export-event-name" class="form-input" style="width: auto; padding: 8px 14px; font-size: 0.85rem;">
+            <option value="Di dalam Gereja">Di dalam Gereja</option>
+            <option value="Di luar Gereja">Di luar Gereja</option>
+          </select>
+          <button id="btn-export-event" class="btn-primary" style="width: auto; padding: 10px 20px; background: var(--primary-light);">📥 Ekspor Lokasi</button>
         </div>
-        <button id="btn-delete-all" class="btn-primary" style="width: auto; background: #dc2626;">Hapus Semua Data Transaksi</button>
+        <button id="btn-delete-all" class="btn-primary" style="width: auto; padding: 10px 20px; background: #ef4444; box-shadow: 0 2px 8px rgba(239,68,68,0.25);">🗑️ Hapus Semua</button>
       </div>
     </div>
   `;

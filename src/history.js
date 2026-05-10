@@ -3,20 +3,25 @@ import { db } from "./firebase-config";
 
 export const renderHistory = async () => {
   return `
-    <div class="page-header" style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
-      <h3>Riwayat Transaksi</h3>
-      <div style="display: flex; gap: 10px; align-items: center;">
-        <select id="filter-method" class="form-input" style="width: auto; padding: 8px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #ecfdf5, #d1fae5); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+          <i data-lucide="history" style="color: var(--primary); width: 20px; height: 20px;"></i>
+        </div>
+        <h3 style="margin: 0;">Riwayat Transaksi</h3>
+      </div>
+      <div style="display: flex; gap: 8px; align-items: center;">
+        <select id="filter-method" class="form-input" style="width: auto; padding: 8px 14px; font-size: 0.85rem;">
           <option value="all">Semua Metode</option>
-          <option value="Tunai">Tunai</option>
-          <option value="QRIS">QRIS</option>
-          <option value="Utang">Utang</option>
+          <option value="Tunai">💵 Tunai</option>
+          <option value="QRIS">📱 QRIS</option>
+          <option value="Utang">📋 Utang</option>
         </select>
-        <input type="date" id="filter-date" class="form-input" style="width: auto; padding: 8px;">
+        <input type="date" id="filter-date" class="form-input" style="width: auto; padding: 8px 14px; font-size: 0.85rem;">
       </div>
     </div>
     
-    <div id="history-list" style="margin-top: 20px;">
+    <div id="history-list">
       <div class="loading">Memuat riwayat...</div>
     </div>
   `;
