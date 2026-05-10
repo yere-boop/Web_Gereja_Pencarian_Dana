@@ -3,17 +3,17 @@
 :root {
   --primary: #064e3b;
   --primary-dark: #022c22;
-  --primary-light: #059669;
-  --accent: #10b981;
-  --accent-alt: #fbbf24;
-  --bg: #f8fafc;
+  --primary-light: #10b981;
+  --accent: #f59e0b;
+  --bg: #f1f5f9;
   --surface: #ffffff;
-  --text: #0f172a;
+  --text: #1e293b;
   --text-muted: #64748b;
-  --border: #e2e8f0;
-  --radius: 16px;
-  --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
-  --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --border: #cbd5e1;
+  --radius: 12px;
+  --radius-lg: 20px;
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   --sidebar-w: 280px;
 }
 
@@ -126,31 +126,26 @@ input, select, textarea {
 }
 
 .sidebar {
-  background: linear-gradient(180deg, var(--primary-dark) 0%, var(--primary) 100%);
+  background: var(--primary-dark);
   color: white;
-  padding: 32px 24px;
+  padding: 32px 20px;
   display: flex;
   flex-direction: column;
-  box-shadow: 4px 0 24px rgba(0,0,0,0.1);
-  z-index: 10;
-}
-
-.logo-container {
-  transition: transform 0.3s ease;
-}
-
-.sidebar-header:hover .logo-container {
-  transform: rotate(-5deg) scale(1.05);
+  box-shadow: 2px 0 10px rgba(0,0,0,0.1);
 }
 
 .sidebar-header {
-  margin-bottom: 32px;
+  padding: 0 12px;
+  margin-bottom: 40px;
 }
 
 .church-name {
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: var(--accent-alt);
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  background: linear-gradient(to right, #ffffff, #94a3b8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .nav-menu {
@@ -226,6 +221,18 @@ input, select, textarea {
   color: white;
   font-weight: 700;
 }
+
+/* Badges */
+.badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: inline-block;
+}
+.badge-cash { background: #dcfce7; color: #15803d; }
+.badge-qris { background: #e0f2fe; color: #0369a1; }
+.badge-debt { background: #fffbeb; color: #b45309; }
 
 /* Page Components */
 .page-header {
@@ -431,6 +438,39 @@ input, select, textarea {
   }
   .cart-panel {
     position: static;
-    height: auto;
   }
+}
+
+/* Modern Table Styling */
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+th {
+  background: #f8fafc;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+
+td {
+  padding: 16px 24px;
+  font-size: 0.9rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+tr:hover td {
+  background: #f8fafc;
 }

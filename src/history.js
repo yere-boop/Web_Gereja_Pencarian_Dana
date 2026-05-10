@@ -10,6 +10,7 @@ export const renderHistory = async () => {
           <option value="all">Semua Metode</option>
           <option value="Tunai">Tunai</option>
           <option value="QRIS">QRIS</option>
+          <option value="Utang">Utang</option>
         </select>
         <input type="date" id="filter-date" class="form-input" style="width: auto; padding: 8px;">
       </div>
@@ -79,17 +80,21 @@ export const initHistory = async () => {
                   </td>
                   <td style="padding: 16px;">
                     <div style="font-weight: 700; color: var(--primary);">Rp ${t.total.toLocaleString('id-ID')}</div>
-                    <span class="badge ${t.paymentMethod === 'Tunai' ? 'badge-cash' : 'badge-qris'}">${t.paymentMethod}</span>
+                    <span class="badge ${t.paymentMethod === 'Tunai' ? 'badge-cash' : (t.paymentMethod === 'QRIS' ? 'badge-qris' : 'badge-debt')}">${t.paymentMethod}</span>
                     ${t.paymentMethod === 'Tunai' ? `
                       <div style="font-size: 0.7rem; margin-top: 4px; color: var(--text-muted);">
                         💵 Dibayar: Rp ${t.paymentDetails?.received?.toLocaleString('id-ID') || 0}<br>
                         💰 Kembalian: Rp ${t.paymentDetails?.change?.toLocaleString('id-ID') || 0}
                       </div>
-                    ` : `
+                    ` : (t.paymentMethod === 'QRIS' ? `
                       <div style="margin-top: 4px;">
                         <img src="${t.paymentDetails?.qrisUrl || ''}" class="qris-thumb" style="width: 30px; height: 30px; border-radius: 4px; cursor: pointer; object-fit: cover;">
                       </div>
-                    `}
+                    ` : `
+                      <div style="font-size: 0.7rem; margin-top: 4px; color: #b45309; font-weight: 500;">
+                        📌 Belum Lunas
+                      </div>
+                    `)}
                   </td>
                   <td style="padding: 16px;">
                     <button class="btn-delete-tx" data-id="${t.id}" style="color: #dc2626; background: none; font-size: 0.8rem;">Hapus</button>

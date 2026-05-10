@@ -17,6 +17,10 @@ export const renderReports = async () => {
         <div class="stat-label">Pemasukan Hari Ini</div>
         <div class="stat-value" id="rep-total-today">Rp 0</div>
       </div>
+      <div class="stat-card" style="border-left: 4px solid #fcd34d;">
+        <div class="stat-label">Total Piutang (Utang)</div>
+        <div class="stat-value" id="rep-total-debt" style="color: #b45309;">Rp 0</div>
+      </div>
     </div>
 
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 24px; margin-bottom: 32px;">
@@ -50,13 +54,23 @@ export const initReports = async () => {
   
   if (transactions.length === 0) return;
 
-  const totalAll = transactions.reduce((sum, t) => sum + t.total, 0);
+  const totalAll = transactions
+    .filter(t => t.paymentMethod !== 'Utang')
+    .reduce((sum, t) => sum + t.total, 0);
+    
+  const totalDebt = transactions
+    .filter(t => t.paymentMethod === 'Utang')
+    .reduce((sum, t) => sum + t.total, 0);
+
   const today = new Date().toISOString().split('T')[0];
-  const totalToday = transactions.filter(t => t.date === today).reduce((sum, t) => sum + t.total, 0);
+  const totalToday = transactions
+    .filter(t => t.date === today && t.paymentMethod !== 'Utang')
+    .reduce((sum, t) => sum + t.total, 0);
   
   document.getElementById('rep-total-all').textContent = `Rp ${totalAll.toLocaleString('id-ID')}`;
   document.getElementById('rep-total-count').textContent = transactions.length;
   document.getElementById('rep-total-today').textContent = `Rp ${totalToday.toLocaleString('id-ID')}`;
+  document.getElementById('rep-total-debt').textContent = `Rp ${totalDebt.toLocaleString('id-ID')}`;
 
   // Charts
   renderMethodChart(transactions);
@@ -132,22 +146,28 @@ const exportToCSV = (data, filename = 'Laporan_Transaksi') => {
   
   const headers = ['ID', 'Tanggal', 'Pembeli', 'Acara', 'Total', 'Metode', 'Produk'];
   const rows = data.map(t => [
-    `"${t.id}"`,
-    `"${new Date(t.timestamp.seconds * 1000).toLocaleString('id-ID').replace(/"/g, '""')}"`,
-    `"${(t.buyerName || '').replace(/"/g, '""')}"`,
-    `"${(t.eventName || '').replace(/"/g, '""')}"`,
-    `"${t.total}"`,
-    `"${t.paymentMethod}"`,
-    `"${t.items.map(i => `${i.name}(${i.quantity})`).join('|').replace(/"/g, '""')}"`
+    t.id,
+    new Date(t.timestamp.seconds * 1000).toLocaleString('id-ID'),
+    t.buyerName || '',
+    t.eventName || '',
+    t.total,
+    t.paymentMethod,
+    t.items.map(i => `${i.name}(${i.quantity})`).join(' | ')
   ]);
 
-  let csvContent = "data:text/csv;charset=utf-8," 
-    + headers.join(",") + "\n"
-    + rows.map(e => e.join(",")).join("\n");
+  // Use semicolon for better compatibility with regional Excel/WPS settings
+  // Add "sep=;" at the top so Excel knows what separator to use
+  const separator = ";";
+  let csvContent = "sep=" + separator + "\r\n";
+  csvContent += headers.join(separator) + "\r\n";
+  csvContent += rows.map(r => r.map(cell => `"${(cell || '').toString().replace(/"/g, '""')}"`).join(separator)).join("\r\n");
 
-  const encodedUri = encodeURI(csvContent);
+  // Use Blob with BOM for UTF-8 compatibility
+  const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  
   const link = document.createElement("a");
-  link.setAttribute("href", encodedUri);
+  link.setAttribute("href", url);
   link.setAttribute("download", `${filename}.csv`);
   document.body.appendChild(link);
   link.click();

@@ -85,8 +85,11 @@ export const renderPOS = async () => {
         </div>
         
         <div class="form-group">
-          <label>Acara / Kegiatan</label>
-          <input type="text" id="event-name" class="form-input" placeholder="Masukkan Nama Acara">
+          <label>Lokasi / Kegiatan</label>
+          <select id="event-name" class="form-input">
+            <option value="Di dalam Gereja">Di dalam Gereja</option>
+            <option value="Di luar Gereja">Di luar Gereja</option>
+          </select>
         </div>
 
         <div class="cart-items" id="cart-items">
@@ -101,9 +104,10 @@ export const renderPOS = async () => {
           
           <div class="form-group" style="margin-top: 16px;">
             <label>Metode Pembayaran</label>
-            <div style="display: flex; gap: 10px;">
-              <button class="pay-method-btn active" data-method="Tunai" style="flex: 1; padding: 10px; border-radius: 10px; background: #eee;">Tunai</button>
-              <button class="pay-method-btn" data-method="QRIS" style="flex: 1; padding: 10px; border-radius: 10px; background: #eee;">QRIS</button>
+            <div style="display: flex; gap: 8px;">
+              <button class="pay-method-btn active" data-method="Tunai" style="flex: 1; padding: 10px; border-radius: 10px; background: #eee; font-size: 0.9rem;">Tunai</button>
+              <button class="pay-method-btn" data-method="QRIS" style="flex: 1; padding: 10px; border-radius: 10px; background: #eee; font-size: 0.9rem;">QRIS</button>
+              <button class="pay-method-btn" data-method="Utang" style="flex: 1; padding: 10px; border-radius: 10px; background: #eee; font-size: 0.9rem;">Utang</button>
             </div>
           </div>
 
@@ -190,13 +194,21 @@ export const initPOS = async () => {
           </div>
         `;
         initCashLogic();
-      } else {
+      } else if (currentMethod === 'QRIS') {
         payArea.innerHTML = `
           <div class="form-group">
             <label>Bukti Pembayaran QRIS</label>
             <input type="file" id="qris-proof" class="form-input" accept="image/*" capture="environment">
           </div>
         `;
+      } else {
+        payArea.innerHTML = `
+          <div style="background: #fffbeb; border: 1px solid #fcd34d; padding: 12px; border-radius: 12px; display: flex; gap: 10px; align-items: flex-start; margin-top: 10px;">
+            <i data-lucide="info" style="color: #b45309; width: 20px; height: 20px; flex-shrink: 0;"></i>
+            <p style="font-size: 0.85rem; color: #b45309; margin: 0;">Transaksi akan dicatat sebagai <b>Utang/Piutang</b>. Pastikan Nama Pembeli sudah benar.</p>
+          </div>
+        `;
+        if (window.lucide) lucide.createIcons();
       }
     };
   });
@@ -293,18 +305,20 @@ export const initPOS = async () => {
         const received = parseNumber(document.getElementById('cash-received').value);
         if (received < total) return alert("Uang diterima kurang!");
         paymentDetails = { received, change: received - total };
-      } else {
+      } else if (currentMethod === 'QRIS') {
         const qrisFile = document.getElementById('qris-proof').files[0];
         if (!qrisFile) return alert("Mohon upload bukti QRIS.");
         
         try {
-          const base64Proof = await compressImage(qrisFile, 600); // Slightly larger for receipt proof
+          const base64Proof = await compressImage(qrisFile, 600);
           paymentDetails = { qrisUrl: base64Proof };
         } catch (error) {
           console.error("Proof compression error:", error);
           alert("Gagal memproses bukti pembayaran.");
           return;
         }
+      } else {
+        paymentDetails = { note: "Belum Bayar (Utang)" };
       }
 
       const transaction = {
@@ -334,7 +348,6 @@ export const initPOS = async () => {
       cart = [];
       updateCartUI();
       document.getElementById('buyer-name').value = '';
-      document.getElementById('event-name').value = '';
       await calculateTodayIncome();
       document.getElementById('pos-today-income').textContent = `Rp ${totalIncomeToday.toLocaleString('id-ID')}`;
 
@@ -349,7 +362,14 @@ const calculateTodayIncome = async () => {
   const today = new Date().toISOString().split('T')[0];
   const q = query(collection(db, TRANSACTIONS_COLLECTION), where("date", "==", today));
   const snapshot = await getDocs(q);
-  totalIncomeToday = snapshot.docs.reduce((sum, doc) => sum + doc.data().total, 0);
+  totalIncomeToday = snapshot.docs.reduce((sum, doc) => {
+    const data = doc.data();
+    // Only count Tunai and QRIS as income
+    if (data.paymentMethod !== 'Utang') {
+      return sum + data.total;
+    }
+    return sum;
+  }, 0);
 };
 
 const showReceipt = async (transaction, id) => {
