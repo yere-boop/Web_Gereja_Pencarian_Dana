@@ -1,6 +1,5 @@
 import { collection, addDoc, getDocs, doc, updateDoc, query, where, Timestamp } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { db, storage } from "./firebase-config";
+import { db } from "./firebase-config";
 import { getSettings } from "./settings";
 
 const TRANSACTIONS_COLLECTION = "transactions";
@@ -25,18 +24,14 @@ const compressImage = (file, maxWidth = 400) => {
         const canvas = document.createElement('canvas');
         let width = img.width;
         let height = img.height;
-
         if (width > maxWidth) {
           height = (maxWidth / width) * height;
           width = maxWidth;
         }
-
         canvas.width = width;
         canvas.height = height;
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0, width, height);
-        
-        // Convert to JPEG with 0.7 quality to keep size small for Firestore
         resolve(canvas.toDataURL('image/jpeg', 0.7));
       };
       img.onerror = (err) => reject(err);
@@ -67,17 +62,13 @@ export const renderPOS = async () => {
     </div>
 
     <div class="pos-layout">
-      <!-- Product Selection -->
       <div class="pos-products">
         <div class="form-group">
           <input type="text" id="pos-search" class="form-input" placeholder="Cari produk...">
         </div>
-        <div id="pos-product-grid" class="product-grid">
-          <!-- Products will be loaded here -->
-        </div>
+        <div id="pos-product-grid" class="product-grid"></div>
       </div>
 
-      <!-- Cart Panel -->
       <div class="cart-panel">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
           <h3 style="margin: 0; font-size: 1.1rem;">🛒 Keranjang</h3>
@@ -141,9 +132,75 @@ export const initPOS = async () => {
   const cartItems = document.getElementById('cart-items');
   const cartTotal = document.getElementById('cart-total');
   const btnSave = document.getElementById('btn-save-transaction');
+  const payArea = document.getElementById('payment-details-area');
+  const methodBtns = document.querySelectorAll('.pay-method-btn');
   
+  let currentMethod = 'Tunai';
+
   const productsSnapshot = await getDocs(collection(db, PRODUCTS_COLLECTION));
   const products = productsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+  const calculateTotal = () => cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+  const initCashLogic = () => {
+    const cashInput = document.getElementById('cash-received');
+    const changeDisplay = document.getElementById('cash-change');
+    if (cashInput && changeDisplay) {
+      cashInput.oninput = (e) => {
+        let rawValue = e.target.value.replace(/\D/g, "");
+        e.target.value = rawValue ? formatNumber(rawValue) : "";
+        const total = calculateTotal();
+        const received = parseNumber(e.target.value);
+        const change = received - total;
+        changeDisplay.textContent = `Rp ${change.toLocaleString('id-ID')}`;
+        changeDisplay.style.color = change < 0 ? '#dc2626' : 'var(--primary)';
+      };
+    }
+  };
+
+  const updateCartUI = () => {
+    if (cart.length === 0) {
+      cartItems.innerHTML = '<p style="text-align: center; color: var(--text-muted); margin-top: 20px;">Keranjang kosong</p>';
+      cartTotal.textContent = 'Rp 0';
+      return;
+    }
+
+    cartItems.innerHTML = cart.map((item, index) => `
+      <div class="cart-item">
+        <div class="item-info">
+          <h4>${item.name}</h4>
+          <p>${item.quantity} x Rp ${item.price.toLocaleString('id-ID')}</p>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <button class="btn-remove" data-index="${index}" style="color: #dc2626; background: none; font-size: 1.2rem; cursor: pointer;">&times;</button>
+        </div>
+      </div>
+    `).join('');
+
+    cartTotal.textContent = `Rp ${calculateTotal().toLocaleString('id-ID')}`;
+
+    document.querySelectorAll('.btn-remove').forEach(btn => {
+      btn.onclick = () => {
+        const index = parseInt(btn.getAttribute('data-index'));
+        cart.splice(index, 1);
+        updateCartUI();
+      };
+    });
+    
+    if (currentMethod === 'Tunai') initCashLogic();
+  };
+
+  const addToCart = (product) => {
+    if (product.stock <= 0) return alert("Stok habis!");
+    const existing = cart.find(item => item.id === product.id);
+    if (existing) {
+      if (existing.quantity >= product.stock) return alert("Stok tidak cukup!");
+      existing.quantity++;
+    } else {
+      cart.push({ ...product, quantity: 1 });
+    }
+    updateCartUI();
+  };
 
   const renderProductGrid = (filter = '') => {
     productGrid.innerHTML = products
@@ -168,20 +225,15 @@ export const initPOS = async () => {
     });
   };
 
+  // Event Listeners
   renderProductGrid();
-
   document.getElementById('pos-search').oninput = (e) => renderProductGrid(e.target.value);
-
-  // Payment Method Switching
-  let currentMethod = 'Tunai';
-  const methodBtns = document.querySelectorAll('.pay-method-btn');
-  const payArea = document.getElementById('payment-details-area');
+  initCashLogic();
 
   methodBtns.forEach(btn => {
     btn.onclick = () => {
       methodBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      
       currentMethod = btn.getAttribute('data-method');
       
       if (currentMethod === 'Tunai') {
@@ -215,146 +267,52 @@ export const initPOS = async () => {
     };
   });
 
-  const initCashLogic = () => {
-    const cashInput = document.getElementById('cash-received');
-    const changeDisplay = document.getElementById('cash-change');
-    if (cashInput) {
-      cashInput.oninput = (e) => {
-        // Formatting as you type
-        let rawValue = e.target.value.replace(/\D/g, "");
-        e.target.value = rawValue ? formatNumber(rawValue) : "";
-        
-        const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-        const received = parseNumber(e.target.value);
-        const change = received - total;
-        changeDisplay.textContent = `Rp ${change.toLocaleString('id-ID')}`;
-        
-        if (change < 0) {
-          changeDisplay.style.color = '#dc2626';
-        } else {
-          changeDisplay.style.color = 'var(--primary)';
-        }
-      };
-    }
-  };
-  
-  initCashLogic();
-
-  const addToCart = (product) => {
-    if (product.stock <= 0) {
-      alert("Stok habis!");
-      return;
-    }
-    
-    const existing = cart.find(item => item.id === product.id);
-    if (existing) {
-      if (existing.quantity >= product.stock) {
-        alert("Stok tidak cukup!");
-        return;
-      }
-      existing.quantity++;
-    } else {
-      cart.push({ ...product, quantity: 1 });
-    }
-    updateCartUI();
-  };
-
-  const updateCartUI = () => {
-    if (cart.length === 0) {
-      cartItems.innerHTML = '<p style="text-align: center; color: var(--text-muted); margin-top: 20px;">Keranjang kosong</p>';
-      cartTotal.textContent = 'Rp 0';
-      return;
-    }
-
-    cartItems.innerHTML = cart.map((item, index) => `
-      <div class="cart-item">
-        <div class="item-info">
-          <h4>${item.name}</h4>
-          <p>${item.quantity} x Rp ${item.price.toLocaleString('id-ID')}</p>
-        </div>
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <button class="btn-remove" data-index="${index}" style="color: #dc2626; background: none;">×</button>
-        </div>
-      </div>
-    `).join('');
-
-    const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    cartTotal.textContent = `Rp ${total.toLocaleString('id-ID')}`;
-
-    document.querySelectorAll('.btn-remove').forEach(btn => {
-      btn.onclick = () => {
-        const index = btn.getAttribute('data-index');
-        cart.splice(index, 1);
-        updateCartUI();
-      };
-    });
-    
-    initCashLogic();
-  };
-
   btnSave.onclick = async () => {
     if (cart.length === 0) return alert("Keranjang masih kosong!");
-    
     const buyerName = document.getElementById('buyer-name').value;
     const eventName = document.getElementById('event-name').value;
-    
-    if (!buyerName || !eventName) return alert("Mohon isi nama pembeli dan acara.");
+    if (!buyerName || !eventName) return alert("Mohon isi nama pembeli dan lokasi.");
 
     try {
       let paymentDetails = {};
+      const total = calculateTotal();
+
       if (currentMethod === 'Tunai') {
-        const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
         const received = parseNumber(document.getElementById('cash-received').value);
         if (received < total) return alert("Uang diterima kurang!");
         paymentDetails = { received, change: received - total };
       } else if (currentMethod === 'QRIS') {
         const qrisFile = document.getElementById('qris-proof').files[0];
         if (!qrisFile) return alert("Mohon upload bukti QRIS.");
-        
-        try {
-          const base64Proof = await compressImage(qrisFile, 600);
-          paymentDetails = { qrisUrl: base64Proof };
-        } catch (error) {
-          console.error("Proof compression error:", error);
-          alert("Gagal memproses bukti pembayaran.");
-          return;
-        }
+        const base64Proof = await compressImage(qrisFile, 600);
+        paymentDetails = { qrisUrl: base64Proof };
       } else {
         paymentDetails = { note: "Belum Bayar (Utang)" };
       }
 
       const transaction = {
-        buyerName,
-        eventName,
-        items: cart,
-        total: cart.reduce((sum, item) => sum + (item.price * item.quantity), 0),
+        buyerName, eventName, items: cart, total,
         paymentMethod: currentMethod,
         paymentDetails,
         timestamp: Timestamp.now(),
         date: new Date().toISOString().split('T')[0]
       };
 
-      // Save Transaction
       const docRef = await addDoc(collection(db, TRANSACTIONS_COLLECTION), transaction);
-      
-      // Update Stocks
       for (const item of cart) {
         const prodRef = doc(db, PRODUCTS_COLLECTION, item.id);
         await updateDoc(prodRef, { stock: item.stock - item.quantity });
       }
 
-      // Show Receipt
       showReceipt(transaction, docRef.id);
-      
-      // Reset
       cart = [];
       updateCartUI();
       document.getElementById('buyer-name').value = '';
       await calculateTodayIncome();
-      document.getElementById('pos-today-income').textContent = `Rp ${totalIncomeToday.toLocaleString('id-ID')}`;
-
+      const incomeDisplay = document.getElementById('pos-today-income');
+      if (incomeDisplay) incomeDisplay.textContent = `Rp ${totalIncomeToday.toLocaleString('id-ID')}`;
     } catch (error) {
-      console.error("Transaction Save Error:", error);
+      console.error("Transaction Error:", error);
       alert("Gagal menyimpan transaksi.");
     }
   };
@@ -366,11 +324,7 @@ const calculateTodayIncome = async () => {
   const snapshot = await getDocs(q);
   totalIncomeToday = snapshot.docs.reduce((sum, doc) => {
     const data = doc.data();
-    // Only count Tunai and QRIS as income
-    if (data.paymentMethod !== 'Utang') {
-      return sum + data.total;
-    }
-    return sum;
+    return data.paymentMethod !== 'Utang' ? sum + data.total : sum;
   }, 0);
 };
 
@@ -421,10 +375,10 @@ const showReceipt = async (transaction, id) => {
     
     <div style="display: flex; gap: 10px; margin-top: 20px;">
       <button class="btn-primary" onclick="window.print()" style="flex: 1;">🖨️ Cetak</button>
-      <button class="btn-close-modal" style="flex: 1; padding: 12px; border-radius: var(--radius); background: var(--bg); font-weight: 600; color: var(--text-secondary);">Tutup</button>
+      <button class="btn-close-modal" id="btn-close-receipt" style="flex: 1; padding: 12px; border-radius: var(--radius); background: var(--bg); font-weight: 600; color: var(--text-secondary);">Tutup</button>
     </div>
   `;
   
   modal.classList.add('active');
-  document.querySelector('.btn-close-modal').addEventListener('click', () => modal.classList.remove('active'));
+  document.getElementById('btn-close-receipt').onclick = () => modal.classList.remove('active');
 };
