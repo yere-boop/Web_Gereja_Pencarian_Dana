@@ -57,7 +57,8 @@ export const initHistory = async () => {
 
       historyList.innerHTML = `
         <div class="card" style="padding: 0; overflow: hidden;">
-          <table style="width: 100%; border-collapse: collapse; text-align: left;">
+    <div class="table-responsive">
+      <table style="width: 100%; border-collapse: collapse; text-align: left;">
             <thead>
               <tr style="background: #f8f9fa; border-bottom: 1px solid var(--border);">
                 <th style="padding: 16px;">Tanggal & ID</th>
@@ -109,6 +110,7 @@ export const initHistory = async () => {
             </tbody>
           </table>
         </div>
+      </div>
       `;
     } catch (error) {
       console.error("Load History Error:", error);

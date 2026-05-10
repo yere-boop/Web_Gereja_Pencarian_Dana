@@ -765,6 +765,52 @@ tbody tr:hover td {
 /* ═══════════════════════════════════════
    RESPONSIVE
    ═══════════════════════════════════════ */
+.mobile-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  height: 64px;
+  border-top: 1px solid var(--border-light);
+  justify-content: space-around;
+  align-items: center;
+  z-index: 100;
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
+}
+
+.mobile-nav-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: var(--text-muted);
+  font-size: 0.65rem;
+  font-weight: 600;
+  gap: 4px;
+  width: 25%;
+}
+
+.mobile-nav-link i {
+  width: 20px;
+  height: 20px;
+}
+
+.mobile-nav-link.active {
+  color: var(--primary);
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  background: var(--surface);
+}
+
 @media (max-width: 1024px) {
   .app-shell {
     grid-template-columns: 1fr;
@@ -772,14 +818,36 @@ tbody tr:hover td {
   .sidebar {
     display: none;
   }
+  .main-content {
+    padding: 16px 16px 80px 16px; /* Space for mobile nav */
+  }
+  .mobile-nav {
+    display: flex;
+  }
   .pos-layout {
     grid-template-columns: 1fr;
   }
   .cart-panel {
     position: static;
     height: auto;
+    margin-top: 24px;
   }
-  .main-content {
-    padding: 20px;
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .top-bar {
+    margin-bottom: 20px;
+  }
+  .top-bar h2 {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  .auth-card {
+    padding: 32px 24px;
   }
 }

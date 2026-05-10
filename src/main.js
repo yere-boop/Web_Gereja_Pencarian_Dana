@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 const initRouting = () => {
-  const navLinks = document.querySelectorAll('.nav-link[data-page]');
+  const navLinks = document.querySelectorAll('.nav-link[data-page], .mobile-nav-link[data-page]');
   const currentTitle = document.getElementById('current-view-title');
 
   navLinks.forEach(link => {
@@ -29,12 +29,19 @@ const initRouting = () => {
       e.preventDefault();
       const page = link.getAttribute('data-page');
       
-      // Update Active State
+      // Update Active State for all links (mobile & desktop)
       navLinks.forEach(l => l.classList.remove('active'));
-      link.classList.add('active');
+      document.querySelectorAll(`[data-page="${page}"]`).forEach(l => l.classList.add('active'));
 
       // Update Title
-      currentTitle.textContent = link.textContent.trim();
+      const titleMap = {
+        'pos': 'Transaksi Baru',
+        'products': 'Manajemen Produk',
+        'history': 'Riwayat Transaksi',
+        'reports': 'Laporan Keuangan',
+        'settings': 'Pengaturan Sistem'
+      };
+      currentTitle.textContent = titleMap[page] || 'Menu';
 
       // Load Page Content
       loadPage(page);

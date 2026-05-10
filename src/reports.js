@@ -186,23 +186,31 @@ const exportToCSV = (data, filename = 'Laporan_Transaksi') => {
     t.items.map(i => `${i.name}(${i.quantity})`).join(' | ')
   ]);
 
-  // Use semicolon for better compatibility with regional Excel/WPS settings
-  // Add "sep=;" at the top so Excel knows what separator to use
   const separator = ";";
   let csvContent = "sep=" + separator + "\r\n";
   csvContent += headers.join(separator) + "\r\n";
   csvContent += rows.map(r => r.map(cell => `"${(cell || '').toString().replace(/"/g, '""')}"`).join(separator)).join("\r\n");
 
-  // Use Blob with BOM for UTF-8 compatibility
   const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
   
   const link = document.createElement("a");
-  link.setAttribute("href", url);
-  link.setAttribute("download", `${filename}.csv`);
+  // Sanitize filename: replace spaces with underscore and remove non-alphanumeric
+  const safeFilename = filename.replace(/\s+/g, '_').replace(/[^a-z0-9_]/gi, '');
+  
+  link.href = url;
+  link.setAttribute("download", `${safeFilename}.csv`);
+  link.style.visibility = 'hidden';
+  link.style.display = 'none';
+  
   document.body.appendChild(link);
   link.click();
-  document.body.removeChild(link);
+  
+  // Cleanup after a short delay
+  setTimeout(() => {
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }, 100);
 };
 
 const showCustomConfirm = (message, onConfirm) => {
