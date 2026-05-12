@@ -639,12 +639,14 @@ select.form-input {
   background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(4px);
   display: flex;
-  align-items: center;
+  align-items: flex-start; /* Change from center to flex-start for scrolling safety */
   justify-content: center;
   z-index: 1000;
   visibility: hidden;
   opacity: 0;
   transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-y: auto; /* Enable scrolling for the overlay */
+  padding: 40px 20px; /* Add padding for space around the modal */
 }
 
 .modal-overlay.active {
@@ -662,6 +664,8 @@ select.form-input {
   box-shadow: var(--shadow-xl);
   border: 1px solid var(--border-light);
   animation: modalIn 0.3s ease-out;
+  margin-top: auto;
+  margin-bottom: auto; /* Centering helper when using flex-start on parent */
 }
 
 @keyframes modalIn {
@@ -842,6 +846,10 @@ tbody tr:hover td {
 
 /* ─── TABLET LANDSCAPE (max 1024px) ─── */
 @media (max-width: 1024px) {
+  :root {
+    --radius-xl: 20px; /* Smaller radii for compact look */
+  }
+
   .app-shell {
     grid-template-columns: 1fr;
   }
@@ -852,142 +860,128 @@ tbody tr:hover td {
 
   .mobile-nav {
     display: flex;
+    height: 60px; /* Slightly shorter */
   }
 
   .main-content {
-    padding: 20px 20px 88px 20px;
+    padding: 16px 16px 80px 16px; /* Reduced padding */
   }
 
   .pos-layout {
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 16px;
   }
 
   .cart-panel {
     position: static;
     height: auto;
     border-radius: var(--radius-lg);
+    padding: 16px; /* Compact cart */
   }
 
   .product-grid {
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 16px;
-  }
-
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 14px;
-  }
-
-  .top-bar {
-    margin-bottom: 20px;
-  }
-
-  .top-bar h2 {
-    font-size: 1.25rem;
-  }
-
-  .modal-content {
-    max-width: 90vw;
-    padding: 28px;
-  }
-}
-
-/* ─── TABLET PORTRAIT (max 768px) ─── */
-@media (max-width: 768px) {
-  .main-content {
-    padding: 16px 16px 88px 16px;
-  }
-
-  .top-bar {
-    flex-direction: column;
-    align-items: flex-start;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); /* More items per row */
     gap: 12px;
-    margin-bottom: 18px;
-  }
-
-  .top-bar h2 {
-    font-size: 1.15rem;
-  }
-
-  .user-profile {
-    align-self: flex-end;
-    padding: 6px 12px 6px 6px;
-  }
-
-  .avatar {
-    width: 32px;
-    height: 32px;
-    font-size: 0.75rem;
   }
 
   .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+    grid-template-columns: repeat(4, 1fr); /* 4 stats per row instead of 2 */
+    gap: 12px;
   }
 
   .stat-card {
-    padding: 16px;
-    border-radius: var(--radius);
+    padding: 14px;
   }
 
   .stat-value {
     font-size: 1.25rem;
   }
 
-  .stat-label {
-    font-size: 0.7rem;
+  .top-bar {
+    margin-bottom: 16px;
   }
 
-  .product-grid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 12px;
-  }
-
-  .card-img {
-    height: 120px;
-  }
-
-  .card-content {
-    padding: 12px 14px;
-  }
-
-  .cart-panel {
-    padding: 18px;
-    border-radius: var(--radius);
-  }
-
-  .btn-primary {
-    padding: 12px 18px;
-    font-size: 0.9rem;
-  }
-
-  .form-input {
-    padding: 11px 14px;
-    font-size: 0.9rem;
+  .top-bar h2 {
+    font-size: 1.15rem;
   }
 
   .modal-content {
-    max-width: 95vw;
-    padding: 24px 20px;
-    border-radius: var(--radius-lg);
-    margin: 16px;
+    max-width: 550px; /* Keep it narrow but centered */
+    padding: 24px;
+  }
+  
+  #image-preview {
+    max-height: 140px !important; /* Smaller preview on tablets */
+  }
+}
+
+/* ─── TABLET PORTRAIT (max 768px) ─── */
+@media (max-width: 768px) {
+  .main-content {
+    padding: 12px 12px 80px 12px;
   }
 
-  /* History filter bar stacks */
-  #content-area [style*="justify-content: space-between"] {
-    flex-direction: column;
-    align-items: flex-start !important;
+  .top-bar {
+    flex-direction: row; /* Keep horizontal if possible */
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .top-bar h2 {
+    font-size: 1rem;
+  }
+
+  .user-profile {
+    padding: 4px 10px 4px 4px;
+  }
+
+  .avatar {
+    width: 28px;
+    height: 28px;
+    font-size: 0.7rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .stat-card {
+    padding: 12px;
+  }
+
+  .stat-value {
+    font-size: 1.1rem;
+  }
+
+  .stat-label {
+    font-size: 0.65rem;
+  }
+
+  .product-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+  }
+
+  .card-img {
+    height: 100px;
+  }
+
+  .card-content {
+    padding: 10px 12px;
+  }
+
+  .modal-content {
+    max-width: 90vw;
+    padding: 20px;
+    margin: 12px;
   }
 
   th, td {
-    padding: 12px 14px !important;
-    font-size: 0.82rem;
-  }
-
-  .badge {
-    font-size: 0.62rem;
-    padding: 3px 8px;
+    padding: 10px 12px !important;
+    font-size: 0.78rem;
   }
 }
 
