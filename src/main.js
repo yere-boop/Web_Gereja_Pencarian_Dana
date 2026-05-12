@@ -9,6 +9,7 @@ import { renderSettings, initSettings, getSettings } from './settings';
 document.addEventListener('DOMContentLoaded', async () => {
   initAuth();
   initRouting();
+  initThemeToggle();
   
   // Initial check for settings to update header
   try {
@@ -19,6 +20,47 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.log("Waiting for auth to fetch settings...");
   }
 });
+
+// ═══════════════════════════════════════
+// THEME TOGGLE (Mode Terang/Gelap)
+// ═══════════════════════════════════════
+const initThemeToggle = () => {
+  const toggleBtn = document.getElementById('theme-toggle');
+  const html = document.documentElement;
+  
+  // Muat preferensi dari localStorage
+  const savedTheme = localStorage.getItem('theme') || 'light';
+  html.setAttribute('data-theme', savedTheme);
+  updateThemeIcon(savedTheme);
+
+  if (toggleBtn) {
+    toggleBtn.addEventListener('click', () => {
+      const currentTheme = html.getAttribute('data-theme') || 'light';
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      
+      html.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      updateThemeIcon(newTheme);
+    });
+  }
+};
+
+const updateThemeIcon = (theme) => {
+  const darkIcon = document.querySelector('.theme-icon-dark');
+  const lightIcon = document.querySelector('.theme-icon-light');
+  
+  if (darkIcon && lightIcon) {
+    if (theme === 'dark') {
+      darkIcon.style.display = 'none';
+      lightIcon.style.display = 'block';
+    } else {
+      darkIcon.style.display = 'block';
+      lightIcon.style.display = 'none';
+    }
+    // Re-render ikon Lucide
+    if (window.lucide) lucide.createIcons();
+  }
+};
 
 const initRouting = () => {
   const navLinks = document.querySelectorAll('.nav-link[data-page], .mobile-nav-link[data-page]');

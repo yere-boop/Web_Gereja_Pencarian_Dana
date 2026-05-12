@@ -31,6 +31,268 @@
 }
 
 /* ═══════════════════════════════════════
+   DARK MODE
+   ═══════════════════════════════════════ */
+[data-theme="dark"] {
+  --primary: #10b981;
+  --primary-dark: #064e3b;
+  --primary-light: #34d399;
+  --primary-glow: rgba(16, 185, 129, 0.25);
+  --accent: #fbbf24;
+  --accent-light: #422006;
+  --danger: #f87171;
+  --danger-light: #450a0a;
+  --bg: #0c1222;
+  --bg-gradient: linear-gradient(135deg, #0c1222 0%, #111827 50%, #0f172a 100%);
+  --surface: rgba(30, 41, 59, 0.85);
+  --surface-elevated: #1e293b;
+  --text: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --text-muted: #64748b;
+  --border: #1e3a5f;
+  --border-light: #1e293b;
+  --shadow-xs: 0 1px 2px rgba(0,0,0,0.2);
+  --shadow: 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.3), 0 2px 4px -2px rgba(0,0,0,0.2);
+  --shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.4), 0 8px 10px -6px rgba(0,0,0,0.3);
+  --shadow-xl: 0 20px 40px -10px rgba(0,0,0,0.5);
+}
+
+[data-theme="dark"] body {
+  background: var(--bg-gradient);
+  background-attachment: fixed;
+}
+
+[data-theme="dark"] .sidebar {
+  background: linear-gradient(180deg, #0a0f1a 0%, #111827 50%, #1a2332 100%);
+}
+
+[data-theme="dark"] .auth-container {
+  background: linear-gradient(145deg, #0a0f1a 0%, #111827 40%, #1a2332 100%);
+}
+
+[data-theme="dark"] .auth-card {
+  background: rgba(30, 41, 59, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(16, 185, 129, 0.15);
+}
+
+[data-theme="dark"] .auth-card h1 {
+  color: #34d399;
+  background: none;
+  -webkit-text-fill-color: unset;
+}
+
+[data-theme="dark"] .auth-card p {
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .stat-card {
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid rgba(16, 185, 129, 0.12);
+}
+
+[data-theme="dark"] .stat-card::after {
+  background: linear-gradient(90deg, #10b981, #06b6d4);
+}
+
+[data-theme="dark"] .stat-value {
+  color: #34d399;
+}
+
+[data-theme="dark"] .card {
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(16, 185, 129, 0.1);
+}
+
+[data-theme="dark"] .card:hover {
+  border-color: rgba(16, 185, 129, 0.3);
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.1);
+}
+
+[data-theme="dark"] .card-img {
+  opacity: 0.9;
+}
+
+[data-theme="dark"] .cart-panel {
+  background: rgba(30, 41, 59, 0.85);
+  border: 1px solid rgba(16, 185, 129, 0.1);
+}
+
+[data-theme="dark"] .form-input {
+  background: rgba(15, 23, 42, 0.8);
+  border-color: #334155;
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .form-input:focus {
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+}
+
+[data-theme="dark"] .form-input::placeholder {
+  color: #475569;
+}
+
+[data-theme="dark"] .btn-primary {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+}
+
+[data-theme="dark"] .pay-method-btn {
+  background: rgba(15, 23, 42, 0.6) !important;
+  border-color: #334155 !important;
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .pay-method-btn.active {
+  background: rgba(16, 185, 129, 0.15) !important;
+  border-color: #10b981 !important;
+  color: #34d399 !important;
+}
+
+[data-theme="dark"] .modal-overlay {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+[data-theme="dark"] .modal-content {
+  background: #1e293b;
+  border: 1px solid rgba(16, 185, 129, 0.1);
+}
+
+[data-theme="dark"] thead tr {
+  background: linear-gradient(180deg, #1e293b 0%, #1a2332 100%);
+}
+
+[data-theme="dark"] tbody tr:hover td {
+  background: rgba(16, 185, 129, 0.05);
+}
+
+[data-theme="dark"] .badge-cash {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+[data-theme="dark"] .badge-qris {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+[data-theme="dark"] .badge-debt {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+[data-theme="dark"] .mobile-nav {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.92), rgba(30, 41, 59, 0.92));
+  border-top: 1px solid rgba(16, 185, 129, 0.15);
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .mobile-nav-link.active {
+  color: #34d399;
+}
+
+[data-theme="dark"] .top-bar {
+  background: transparent;
+}
+
+[data-theme="dark"] .user-profile {
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(16, 185, 129, 0.1);
+}
+
+[data-theme="dark"] .table-responsive {
+  background: rgba(30, 41, 59, 0.7);
+}
+
+[data-theme="dark"] .btn-delete-tx {
+  background: rgba(239, 68, 68, 0.1) !important;
+  color: #f87171 !important;
+  border-color: rgba(239, 68, 68, 0.2) !important;
+}
+
+[data-theme="dark"] .nav-link {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+[data-theme="dark"] .nav-link:hover {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme="dark"] .nav-link.active {
+  color: #34d399;
+}
+
+[data-theme="dark"] .church-name {
+  background: linear-gradient(135deg, #34d399 0%, #06b6d4 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* ═══════════════════════════════════════
+   THEME TOGGLE BUTTON
+   ═══════════════════════════════════════ */
+.theme-toggle-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-xs);
+  position: relative;
+  overflow: hidden;
+}
+
+.theme-toggle-btn:hover {
+  background: var(--primary-glow);
+  border-color: var(--primary-light);
+  color: var(--primary-light);
+  transform: rotate(15deg);
+  box-shadow: 0 2px 12px rgba(16, 185, 129, 0.2);
+}
+
+.theme-toggle-btn:active {
+  transform: scale(0.9) rotate(15deg);
+}
+
+.theme-toggle-btn i {
+  width: 20px;
+  height: 20px;
+  transition: all 0.3s ease;
+}
+
+[data-theme="dark"] .theme-toggle-btn {
+  background: rgba(30, 41, 59, 0.8);
+  border-color: rgba(16, 185, 129, 0.2);
+  color: #fbbf24;
+}
+
+[data-theme="dark"] .theme-toggle-btn:hover {
+  background: rgba(251, 191, 36, 0.1);
+  border-color: #fbbf24;
+  box-shadow: 0 2px 12px rgba(251, 191, 36, 0.2);
+}
+
+/* ═══════════════════════════════════════
    RESET & BASE
    ═══════════════════════════════════════ */
 * {
