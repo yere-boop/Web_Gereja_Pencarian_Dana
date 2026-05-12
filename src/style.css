@@ -847,8 +847,40 @@ tbody tr:hover td {
   min-width: 700px; /* Prevent table from being too squished */
 }
 
-/* ─── TABLET LANDSCAPE & SMALL DESKTOPS (max 1200px) ─── */
-@media (max-width: 1200px) {
+/* ─── TABLET LANDSCAPE & MEDIUM SCREENS (993px to 1280px) ─── */
+@media (min-width: 993px) and (max-width: 1280px) {
+  :root {
+    --sidebar-w: 230px; /* Narrower sidebar to save space */
+  }
+
+  .main-content {
+    padding: 20px 24px;
+  }
+
+  .pos-layout {
+    grid-template-columns: 1fr 330px; /* Narrower cart panel */
+    gap: 16px;
+  }
+
+  .cart-panel {
+    padding: 20px;
+  }
+
+  .top-bar h2 {
+    font-size: 1.25rem;
+  }
+
+  .sidebar-header {
+    margin-bottom: 24px;
+  }
+
+  .church-name {
+    font-size: 1.1rem;
+  }
+}
+
+/* ─── MOBILE & SMALL TABLETS (max 992px) ─── */
+@media (max-width: 992px) {
   :root {
     --radius-xl: 20px; /* Smaller radii for compact look */
   }
