@@ -1,5 +1,6 @@
 import { collection, getDocs, deleteDoc, doc, query, orderBy, where, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "./firebase-config";
+import { showToast } from "./toast";
 
 export const renderHistory = async () => {
   return `
@@ -150,11 +151,11 @@ export const initHistory = async () => {
           
           // 3. Delete transaction
           await deleteDoc(txRef);
-          alert("Transaksi dihapus dan stok dikembalikan.");
+          showToast("Transaksi dihapus dan stok dikembalikan.", "success");
           loadData();
         } catch (error) {
           console.error("Delete transaction error:", error);
-          alert("Gagal menghapus transaksi.");
+          showToast("Gagal menghapus transaksi.", "error");
         }
       });
     }

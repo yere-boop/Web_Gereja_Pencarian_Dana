@@ -1,5 +1,6 @@
 import { signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "./firebase-config";
+import { showToast } from "./toast";
 
 export const initAuth = () => {
   const authView = document.getElementById('auth-view');
@@ -25,15 +26,22 @@ export const initAuth = () => {
     e.preventDefault();
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
+    const submitBtn = loginForm.querySelector('button[type="submit"]');
     
     // For convenience, we'll append a dummy domain if it's not an email
     const email = username.includes('@') ? username : `${username}@gpdigalilea.com`;
 
     try {
+      submitBtn.classList.add('btn-loading');
+      submitBtn.innerHTML = '<span>Masuk ke Sistem</span>';
       await signInWithEmailAndPassword(auth, email, password);
+      showToast('Berhasil masuk! Selamat datang 👋', 'success');
     } catch (error) {
       console.error("Login Error:", error);
-      alert("Login Gagal: Username atau Password salah.");
+      showToast('Login gagal: Username atau Password salah.', 'error', 4000);
+    } finally {
+      submitBtn.classList.remove('btn-loading');
+      submitBtn.innerHTML = 'Masuk ke Sistem';
     }
   });
 

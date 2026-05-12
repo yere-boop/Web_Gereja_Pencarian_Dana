@@ -1,6 +1,7 @@
 import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc, onSnapshot, query, orderBy } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { db, storage } from "./firebase-config";
+import { showToast } from "./toast";
 
 const PRODUCTS_COLLECTION = "products";
 
@@ -115,7 +116,7 @@ export const initProducts = () => {
           await deleteDoc(doc(db, PRODUCTS_COLLECTION, id));
         } catch (error) {
           console.error("Delete error:", error);
-          alert("Gagal menghapus produk.");
+          showToast("Gagal menghapus produk.", "error");
         }
       });
     }
@@ -222,7 +223,7 @@ const showProductModal = (product = null) => {
           imageUrl = await compressImage(imageFile);
         } catch (convError) {
           console.error("Image conversion error:", convError);
-          alert("Gagal memproses gambar. Coba gambar lain.");
+          showToast("Gagal memproses gambar. Coba gambar lain.", "error");
           return;
         }
       }
@@ -243,9 +244,10 @@ const showProductModal = (product = null) => {
       }
       
       modal.classList.remove('active');
+      showToast(product ? 'Produk berhasil diperbarui! ✅' : 'Produk baru berhasil ditambahkan! 🎉', 'success');
     } catch (error) {
       console.error("Product Save Error:", error);
-      alert("Gagal menyimpan produk. Pastikan database Firestore sudah aktif.");
+      showToast("Gagal menyimpan produk. Pastikan database sudah aktif.", "error");
     }
   });
 

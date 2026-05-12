@@ -1,6 +1,7 @@
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { updatePassword, updateProfile } from "firebase/auth";
 import { db, auth } from "./firebase-config";
+import { showToast } from "./toast";
 
 const SETTINGS_DOC_ID = "general";
 
@@ -89,10 +90,10 @@ export const initSettings = () => {
         await updatePassword(auth.currentUser, newPassword);
       }
       
-      alert("Pengaturan berhasil disimpan!");
+      showToast("Pengaturan berhasil disimpan! ✅", "success");
     } catch (error) {
       console.error("Settings Update Error:", error);
-      alert("Gagal menyimpan pengaturan. Pastikan Anda memiliki izin.");
+      showToast("Gagal menyimpan pengaturan. Pastikan Anda memiliki izin.", "error");
     }
   });
 };

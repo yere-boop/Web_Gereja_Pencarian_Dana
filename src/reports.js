@@ -1,5 +1,6 @@
 import { collection, getDocs, deleteDoc, doc, writeBatch, query, orderBy } from "firebase/firestore";
 import { db } from "./firebase-config";
+import { showToast } from "./toast";
 import Chart from 'chart.js/auto';
 
 export const renderReports = async () => {
@@ -111,7 +112,7 @@ export const initReports = async () => {
   document.getElementById('btn-export-all').onclick = () => exportToCSV(transactions);
   document.getElementById('btn-export-event').onclick = () => {
     const event = document.getElementById('export-event-name').value;
-    if (!event) return alert("Masukkan nama acara!");
+    if (!event) return showToast("Masukkan nama acara!", "warning");
     const filtered = transactions.filter(t => t.eventName.toLowerCase().includes(event.toLowerCase()));
     exportToCSV(filtered, `Laporan_${event}`);
   };
@@ -121,7 +122,7 @@ export const initReports = async () => {
       const batch = writeBatch(db);
       snapshot.docs.forEach(doc => batch.delete(doc.ref));
       await batch.commit();
-      alert("Semua data transaksi telah dihapus.");
+      showToast("Semua data transaksi telah dihapus.", "success");
       location.reload();
     });
   };
@@ -173,7 +174,7 @@ const renderProductChart = (transactions) => {
 };
 
 const exportToCSV = (data, filename = 'Laporan_Transaksi') => {
-  if (data.length === 0) return alert("Tidak ada data untuk diekspor.");
+  if (data.length === 0) return showToast("Tidak ada data untuk diekspor.", "warning");
   
   const headers = ['ID', 'Tanggal', 'Pembeli', 'Acara', 'Total', 'Metode', 'Produk'];
   const rows = data.map(t => [

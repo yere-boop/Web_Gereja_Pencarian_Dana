@@ -101,7 +101,13 @@ const initRouting = () => {
 
 export const loadPage = async (page) => {
   const contentArea = document.getElementById('content-area');
+  
+  // Animasi keluar
+  contentArea.classList.add('page-exit');
+  await new Promise(r => setTimeout(r, 200));
+  
   contentArea.innerHTML = '<div class="loading" style="padding: 40px; text-align: center;">Memuat...</div>';
+  contentArea.classList.remove('page-exit');
 
   try {
     switch (page) {
@@ -128,6 +134,11 @@ export const loadPage = async (page) => {
       default:
         contentArea.innerHTML = '<h3>Halaman tidak ditemukan</h3>';
     }
+    
+    // Animasi masuk
+    contentArea.style.animation = 'none';
+    contentArea.offsetHeight; // trigger reflow
+    contentArea.style.animation = '';
     
     // Re-initialize Lucide icons for new content
     if (window.lucide) {

@@ -1,6 +1,7 @@
 import { collection, addDoc, getDocs, doc, updateDoc, query, where, Timestamp } from "firebase/firestore";
 import { db } from "./firebase-config";
 import { getSettings } from "./settings";
+import { showToast } from "./toast";
 
 const TRANSACTIONS_COLLECTION = "transactions";
 const PRODUCTS_COLLECTION = "products";
@@ -191,10 +192,10 @@ export const initPOS = async () => {
   };
 
   const addToCart = (product) => {
-    if (product.stock <= 0) return alert("Stok habis!");
+    if (product.stock <= 0) return showToast("Stok habis!", "warning");
     const existing = cart.find(item => item.id === product.id);
     if (existing) {
-      if (existing.quantity >= product.stock) return alert("Stok tidak cukup!");
+      if (existing.quantity >= product.stock) return showToast("Stok tidak cukup!", "warning");
       existing.quantity++;
     } else {
       cart.push({ ...product, quantity: 1 });
@@ -268,10 +269,10 @@ export const initPOS = async () => {
   });
 
   btnSave.onclick = async () => {
-    if (cart.length === 0) return alert("Keranjang masih kosong!");
+    if (cart.length === 0) return showToast("Keranjang masih kosong!", "warning");
     const buyerName = document.getElementById('buyer-name').value;
     const eventName = document.getElementById('event-name').value;
-    if (!buyerName || !eventName) return alert("Mohon isi nama pembeli dan lokasi.");
+    if (!buyerName || !eventName) return showToast("Mohon isi nama pembeli dan lokasi.", "warning");
 
     try {
       let paymentDetails = {};
@@ -279,11 +280,11 @@ export const initPOS = async () => {
 
       if (currentMethod === 'Tunai') {
         const received = parseNumber(document.getElementById('cash-received').value);
-        if (received < total) return alert("Uang diterima kurang!");
+        if (received < total) return showToast("Uang diterima kurang!", "error");
         paymentDetails = { received, change: received - total };
       } else if (currentMethod === 'QRIS') {
         const qrisFile = document.getElementById('qris-proof').files[0];
-        if (!qrisFile) return alert("Mohon upload bukti QRIS.");
+        if (!qrisFile) return showToast("Mohon upload bukti QRIS.", "warning");
         const base64Proof = await compressImage(qrisFile, 600);
         paymentDetails = { qrisUrl: base64Proof };
       } else {
@@ -305,6 +306,7 @@ export const initPOS = async () => {
       }
 
       showReceipt(transaction, docRef.id);
+      showToast('Transaksi berhasil disimpan! 🎉', 'success');
       cart = [];
       updateCartUI();
       document.getElementById('buyer-name').value = '';
@@ -313,7 +315,7 @@ export const initPOS = async () => {
       if (incomeDisplay) incomeDisplay.textContent = `Rp ${totalIncomeToday.toLocaleString('id-ID')}`;
     } catch (error) {
       console.error("Transaction Error:", error);
-      alert("Gagal menyimpan transaksi.");
+      showToast("Gagal menyimpan transaksi.", "error");
     }
   };
 };
