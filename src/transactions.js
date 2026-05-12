@@ -63,64 +63,64 @@ export const renderPOS = async () => {
 
     <div class="pos-layout">
       <div class="pos-products">
-        <div class="form-group">
+        <div class="form-group" style="margin-bottom: 12px;">
           <input type="text" id="pos-search" class="form-input" placeholder="Cari produk...">
         </div>
         <div id="pos-product-grid" class="product-grid"></div>
       </div>
 
       <div class="cart-panel">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
-          <h3 style="margin: 0; font-size: 1.1rem;">🛒 Keranjang</h3>
-          <div style="font-size: 0.78rem; color: var(--text-muted); font-weight: 600; background: var(--bg); padding: 4px 12px; border-radius: 100px;">
-            ${new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 8px;">
+          <h3 style="margin: 0; font-size: 1rem;">🛒 Keranjang</h3>
+          <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 600; background: var(--bg); padding: 2px 10px; border-radius: 100px;">
+            ${new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
           </div>
         </div>
         
-        <div class="form-group">
-          <label>Nama Pembeli</label>
-          <input type="text" id="buyer-name" class="form-input" placeholder="Nama Pembeli">
+        <div class="form-group" style="margin-bottom: 10px;">
+          <label style="margin-bottom: 4px; font-size: 0.8rem;">Nama Pembeli</label>
+          <input type="text" id="buyer-name" class="form-input" placeholder="Nama Pembeli" style="padding: 8px 12px;">
         </div>
         
-        <div class="form-group">
-          <label>Lokasi / Kegiatan</label>
-          <select id="event-name" class="form-input">
+        <div class="form-group" style="margin-bottom: 10px;">
+          <label style="margin-bottom: 4px; font-size: 0.8rem;">Lokasi / Kegiatan</label>
+          <select id="event-name" class="form-input" style="padding: 8px 12px;">
             <option value="Di dalam Gereja">Di dalam Gereja</option>
             <option value="Di luar Gereja">Di luar Gereja</option>
           </select>
         </div>
 
         <div class="cart-items" id="cart-items">
-          <p style="text-align: center; color: var(--text-muted); margin-top: 20px;">Keranjang kosong</p>
+          <p style="text-align: center; color: var(--text-muted); margin-top: 15px; font-size: 0.85rem;">Keranjang kosong</p>
         </div>
 
-        <div class="cart-summary">
-          <div class="summary-row">
-            <span>Total</span>
-            <span id="cart-total" style="font-weight: 700;">Rp 0</span>
+        <div class="cart-summary" style="padding-top: 12px;">
+          <div class="summary-row" style="margin-bottom: 4px;">
+            <span style="font-size: 0.9rem;">Total</span>
+            <span id="cart-total" style="font-weight: 700; font-size: 1.1rem;">Rp 0</span>
           </div>
           
-          <div class="form-group" style="margin-top: 16px;">
-            <label>Metode Pembayaran</label>
-            <div style="display: flex; gap: 8px;">
-              <button class="pay-method-btn active" data-method="Tunai" style="flex: 1; padding: 10px; border-radius: 10px;">💵 Tunai</button>
-              <button class="pay-method-btn" data-method="QRIS" style="flex: 1; padding: 10px; border-radius: 10px;">📱 QRIS</button>
-              <button class="pay-method-btn" data-method="Utang" style="flex: 1; padding: 10px; border-radius: 10px;">📋 Utang</button>
+          <div class="form-group" style="margin-top: 10px; margin-bottom: 10px;">
+            <label style="margin-bottom: 4px; font-size: 0.8rem;">Metode Pembayaran</label>
+            <div style="display: flex; gap: 6px;">
+              <button class="pay-method-btn active" data-method="Tunai" style="flex: 1; padding: 8px; border-radius: 8px;">💵 Tunai</button>
+              <button class="pay-method-btn" data-method="QRIS" style="flex: 1; padding: 8px; border-radius: 8px;">📱 QRIS</button>
+              <button class="pay-method-btn" data-method="Utang" style="flex: 1; padding: 8px; border-radius: 8px;">📋 Utang</button>
             </div>
           </div>
 
           <div id="payment-details-area">
-            <div class="form-group">
-              <label>Uang Diterima</label>
-              <input type="text" id="cash-received" class="form-input" placeholder="0">
+            <div class="form-group" style="margin-bottom: 8px;">
+              <label style="margin-bottom: 4px; font-size: 0.8rem;">Uang Diterima</label>
+              <input type="text" id="cash-received" class="form-input" placeholder="0" style="padding: 8px 12px;">
             </div>
-            <div class="summary-row" style="margin-top: 8px;">
-              <span>Kembalian</span>
-              <span id="cash-change" style="font-weight: 600; color: var(--primary);">Rp 0</span>
+            <div class="summary-row" style="margin-top: 4px; margin-bottom: 0;">
+              <span style="font-size: 0.85rem;">Kembalian</span>
+              <span id="cash-change" style="font-weight: 600; color: var(--primary); font-size: 0.95rem;">Rp 0</span>
             </div>
           </div>
 
-          <button id="btn-save-transaction" class="btn-primary" style="margin-top: 20px;">Simpan Transaksi</button>
+          <button id="btn-save-transaction" class="btn-primary" style="margin-top: 12px; padding: 12px;">Simpan Transaksi</button>
         </div>
       </div>
     </div>
@@ -207,11 +207,11 @@ export const initPOS = async () => {
       .filter(p => p.name.toLowerCase().includes(filter.toLowerCase()))
       .map(p => `
         <div class="card product-item" data-id="${p.id}" style="cursor: pointer;">
-          <img src="${p.imageUrl || 'https://placehold.co/400x400?text=Produk'}" class="card-img" style="height: 120px;">
-          <div class="card-content" style="padding: 12px;">
-            <h4 style="font-size: 0.9rem;">${p.name}</h4>
-            <div style="font-weight: 700; color: var(--primary);">Rp ${p.price.toLocaleString('id-ID')}</div>
-            <div style="font-size: 0.75rem; color: var(--text-muted);">Stok: ${p.stock}</div>
+          <img src="${p.imageUrl || 'https://placehold.co/400x400?text=Produk'}" class="card-img" style="height: 100px;">
+          <div class="card-content" style="padding: 10px;">
+            <h4 style="font-size: 0.85rem; margin-bottom: 2px;">${p.name}</h4>
+            <div style="font-weight: 700; color: var(--primary); font-size: 0.95rem;">Rp ${p.price.toLocaleString('id-ID')}</div>
+            <div style="font-size: 0.7rem; color: var(--text-muted);">Stok: ${p.stock}</div>
           </div>
         </div>
       `).join('');
@@ -257,9 +257,9 @@ export const initPOS = async () => {
         `;
       } else {
         payArea.innerHTML = `
-          <div style="background: #fffbeb; border: 1px solid #fcd34d; padding: 12px; border-radius: 12px; display: flex; gap: 10px; align-items: flex-start; margin-top: 10px;">
-            <i data-lucide="info" style="color: #b45309; width: 20px; height: 20px; flex-shrink: 0;"></i>
-            <p style="font-size: 0.85rem; color: #b45309; margin: 0;">Transaksi akan dicatat sebagai <b>Utang/Piutang</b>. Pastikan Nama Pembeli sudah benar.</p>
+          <div style="background: #fffbeb; border: 1px solid #fcd34d; padding: 10px; border-radius: 10px; display: flex; gap: 8px; align-items: flex-start; margin-top: 6px;">
+            <i data-lucide="info" style="color: #b45309; width: 16px; height: 16px; flex-shrink: 0;"></i>
+            <p style="font-size: 0.78rem; color: #b45309; margin: 0;">Catat sebagai <b>Utang</b>.</p>
           </div>
         `;
         if (window.lucide) lucide.createIcons();

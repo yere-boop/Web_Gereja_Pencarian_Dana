@@ -847,31 +847,41 @@ tbody tr:hover td {
   min-width: 700px; /* Prevent table from being too squished */
 }
 
-/* ─── TABLET LANDSCAPE & MEDIUM SCREENS (993px to 1280px) ─── */
-@media (min-width: 993px) and (max-width: 1280px) {
+/* ─── TABLET LANDSCAPE & MEDIUM SCREENS (993px to 1366px) ─── */
+@media (min-width: 993px) and (max-width: 1366px) {
   :root {
-    --sidebar-w: 230px; /* Narrower sidebar to save space */
+    --sidebar-w: 220px; /* Even narrower sidebar */
   }
 
   .main-content {
-    padding: 20px 24px;
+    padding: 16px 24px;
   }
 
   .pos-layout {
-    grid-template-columns: 1fr 330px; /* Narrower cart panel */
+    grid-template-columns: 1fr 320px; /* Narrower cart panel */
     gap: 16px;
   }
 
   .cart-panel {
-    padding: 20px;
+    padding: 16px;
+    height: calc(100vh - 120px);
+    top: 16px;
+  }
+
+  .top-bar {
+    margin-bottom: 16px;
   }
 
   .top-bar h2 {
-    font-size: 1.25rem;
+    font-size: 1.2rem;
+  }
+
+  .stats-grid {
+    margin-bottom: 16px;
   }
 
   .sidebar-header {
-    margin-bottom: 24px;
+    margin-bottom: 20px;
   }
 
   .church-name {
@@ -882,7 +892,7 @@ tbody tr:hover td {
 /* ─── MOBILE & SMALL TABLETS (max 992px) ─── */
 @media (max-width: 992px) {
   :root {
-    --radius-xl: 20px; /* Smaller radii for compact look */
+    --radius-xl: 16px; 
   }
 
   .app-shell {
@@ -895,58 +905,75 @@ tbody tr:hover td {
 
   .mobile-nav {
     display: flex;
-    height: 60px; /* Slightly shorter */
+    height: 60px;
   }
 
   .main-content {
-    padding: 16px 16px 80px 16px; /* Reduced padding */
+    padding: 12px 16px 72px 16px;
   }
 
-  .pos-layout {
-    grid-template-columns: 1fr;
-    gap: 16px;
+  /* For large tablets in portrait, keep 2 columns if width allows */
+  @media (min-width: 769px) {
+    .pos-layout {
+      grid-template-columns: 1fr 320px;
+      gap: 16px;
+    }
+    
+    .cart-panel {
+      position: sticky;
+      top: 12px;
+      height: calc(100vh - 160px);
+    }
   }
 
-  .cart-panel {
-    position: static;
-    height: auto;
-    border-radius: var(--radius-lg);
-    padding: 16px; /* Compact cart */
+  @media (max-width: 768px) {
+    .pos-layout {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    .cart-panel {
+      position: static;
+      height: auto;
+      border-radius: var(--radius-lg);
+      padding: 16px;
+    }
   }
 
   .product-grid {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); /* More items per row */
-    gap: 12px;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
   }
 
   .stats-grid {
-    grid-template-columns: repeat(4, 1fr); /* 4 stats per row instead of 2 */
-    gap: 12px;
-  }
-
-  .stat-card {
-    padding: 14px;
-  }
-
-  .stat-value {
-    font-size: 1.25rem;
-  }
-
-  .top-bar {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
     margin-bottom: 16px;
   }
 
+  .stat-card {
+    padding: 12px;
+  }
+
+  .stat-value {
+    font-size: 1.2rem;
+  }
+
+  .top-bar {
+    margin-bottom: 12px;
+  }
+
   .top-bar h2 {
-    font-size: 1.15rem;
+    font-size: 1.1rem;
   }
 
   .modal-content {
-    max-width: 550px; /* Keep it narrow but centered */
+    max-width: 500px;
     padding: 24px;
   }
   
   #image-preview {
-    max-height: 140px !important; /* Smaller preview on tablets */
+    max-height: 120px !important;
   }
 }
 
@@ -1146,27 +1173,20 @@ tbody tr:hover td {
   }
 }
 
-/* ─── SMALL PHONE (max 360px) ─── */
-@media (max-width: 360px) {
-  .product-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .stats-grid {
-    gap: 8px;
-  }
-
-  .stat-card {
-    padding: 12px 14px;
-  }
-
-  .stat-value {
-    font-size: 1rem;
-  }
-
-  .top-bar h2 {
-    font-size: 0.95rem;
-  }
+/* ─── COMPACT HEIGHTS (For shorter screens) ─── */
+@media (max-height: 800px) {
+  .main-content { padding-top: 12px; padding-bottom: 12px; }
+  .top-bar { margin-bottom: 10px; }
+  .stats-grid { margin-bottom: 12px; }
+  .stat-card { padding: 12px 16px; }
+  .stat-value { font-size: 1.25rem; }
+  .pos-layout { gap: 12px; }
+  .cart-panel { padding: 14px; top: 8px; height: calc(100vh - 100px); }
+  .cart-summary { padding-top: 10px; }
+  .total-row { font-size: 1.25rem; margin-top: 4px; }
+  .btn-primary { padding: 10px 16px; font-size: 0.88rem; }
+  .sidebar { padding: 16px 12px; }
+  .sidebar-header { margin-bottom: 16px; }
 }
 
 /* ─── Print Styles ─── */
